@@ -13,7 +13,10 @@ rm -f "$DIST/$ARCHIVE"
 
 # Reproducible tarball (stable SHA256 for Homebrew; macOS tar lacks --mtime)
 python3 - "$ROOT" "$DIST/$ARCHIVE" <<'PY'
-import os, sys, tarfile, time
+import gzip
+import io
+import sys
+import tarfile
 from pathlib import Path
 
 root = Path(sys.argv[1])
@@ -41,7 +44,8 @@ def add_dir(tar, base: Path, rel: Path = Path(".")):
             tar.addfile(info, f)
 
 includes = ["pyproject.toml", "README.md", "LICENSE", "ollamallm", "docs"]
-with tarfile.open(archive, "w:gz", format=tarfile.GNU_FORMAT) as tar:
+buf = io.BytesIO()
+with tarfile.open(fileobj=buf, mode="w", format=tarfile.GNU_FORMAT) as tar:
     for name in includes:
         p = root / name
         if p.is_dir():
@@ -53,6 +57,9 @@ with tarfile.open(archive, "w:gz", format=tarfile.GNU_FORMAT) as tar:
             info.uname = info.gname = "root"
             with open(p, "rb") as f:
                 tar.addfile(info, f)
+
+with gzip.GzipFile(filename=str(archive), mode="wb", mtime=0) as gz:
+    gz.write(buf.getvalue())
 PY
 
 SHA="$(shasum -a 256 "$DIST/$ARCHIVE" | awk '{print $1}')"

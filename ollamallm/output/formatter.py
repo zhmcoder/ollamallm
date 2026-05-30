@@ -71,15 +71,28 @@ def format_results(
         lines.append(
             f"搜索「{search_keyword}」— 找到 {len(recommendations)} 个模型，{runnable_count} 个可安装"
         )
+        no_shown = min(5, total_no)
+        if total_no:
+            lines.append(
+                f"另有 {total_no} 个匹配模型内存不足"
+                + (f"（展示前 {no_shown} 个）" if total_no > no_shown else "")
+            )
     else:
         lines.append("推荐 Ollama 模型")
+        runnable_count = total_runnable
+        no_shown = min(8, total_no)
+        summary = f"共 {runnable_count} 个可安装模型"
+        if total_no:
+            summary += (
+                f"（另有 {total_no} 个内存不足"
+                + (f"，展示前 {no_shown} 个" if total_no > no_shown else "")
+                + "）"
+            )
+        lines.append(summary)
+    lines.append("提示: 复制 ollama pull 命令即可安装")
     lines.append("─" * 38)
 
-    shown_no = 0
     for rec in recommendations:
-        if rec.tier == Tier.NO:
-            shown_no += 1
-
         icon = TIER_ICONS[rec.tier]
         name = rec.model.full_name.ljust(20)
         size = f"~{rec.model.size_q4_gb:.1f} GB".ljust(9)
@@ -97,19 +110,6 @@ def format_results(
         else:
             lines.append(f"{icon} {name} {size} {speed} {pull}")
 
-    lines.append("")
-    if search_keyword:
-        no_shown = min(5, total_no)
-        if total_no:
-            lines.append(f"另有 {total_no} 个匹配模型内存不足" + (f"（展示前 {no_shown} 个）" if total_no > no_shown else ""))
-    else:
-        runnable_count = total_runnable
-        no_shown = min(8, total_no)
-        summary = f"共 {runnable_count} 个可安装模型"
-        if total_no:
-            summary += f"（另有 {total_no} 个内存不足" + (f"，展示前 {no_shown} 个" if total_no > no_shown else "") + "）"
-        lines.append(summary)
-    lines.append("提示: 复制 ollama pull 命令即可安装")
     return "\n".join(lines)
 
 

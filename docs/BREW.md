@@ -34,16 +34,35 @@ pip install git+https://github.com/zhmcoder/ollamallm.git
 
 ## 发布新版本（维护者）
 
+### 一键发布（推荐）
+
 ```bash
-# 1. 更新 pyproject.toml 中的 version
-# 2. 提交并打 tag
-git tag v0.1.0 && git push origin v0.1.0
+# 需要 GitHub Personal Access Token（repo 权限）
+GITHUB_TOKEN=ghp_你的token ./scripts/publish-release.sh
+```
 
-# 3. 生成 tarball 与 SHA256
+脚本会自动：打 tarball → 推送 main + tag → 创建 Release → 上传安装包。
+
+### 手动发布
+
+```bash
 ./scripts/release.sh
+git push origin main
+git tag v0.1.0 && git push origin v0.1.0
+```
 
-# 4. 将 dist/ollamallm-0.1.0.tar.gz 上传到 GitHub Release
-# 5. 更新 Formula/ollamallm.rb 中的 sha256 并推送
+然后打开 [GitHub Releases 新建页](https://github.com/zhmcoder/ollamallm/releases/new)：
+
+1. **Choose a tag** → `v0.1.0`
+2. **Release title** → `v0.1.0`
+3. 上传 `dist/ollamallm-0.1.0.tar.gz`
+4. 点击 **Publish release**
+
+### 发布后 Homebrew 安装
+
+```bash
+brew tap zhmcoder/ollamallm https://github.com/zhmcoder/ollamallm
+brew install ollamallm
 ```
 
 ## 验证

@@ -50,3 +50,4 @@ python -m ollamallm M2 Pro 16GB
 - [项目功能简介](docs/INTRO.md)
 - [产品需求文档](docs/PRD.md)
 - [Homebrew 安装说明](docs/BREW.md)
+- [模型搜索功能规格](docs/FEATURE_SEARCH.md)

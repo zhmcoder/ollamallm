@@ -44,6 +44,15 @@ def match_models(profile: HardwareProfile) -> list[Recommendation]:
     return results
 
 
+def filter_by_keyword(recommendations: list[Recommendation], keyword: str) -> list[Recommendation]:
+    key = keyword.lower().strip()
+    return [
+        r
+        for r in recommendations
+        if key in r.model.full_name.lower() or key in r.model.name.lower()
+    ]
+
+
 def _tier_for_model(profile: HardwareProfile, model: ModelEntry) -> Tier:
     available = profile.available_inference_gb
     size = model.size_q4_gb

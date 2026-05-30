@@ -30,8 +30,12 @@ ollamallm MacBook Pro M3      # 查型号：把型号写在后面即可
 | 查 Mac | `ollamallm M2 Pro 16GB` |
 | 查 Mac（Intel） | `ollamallm MacBook Pro 2019` 或 `ollamallm MacBook Pro 2020 Intel` |
 | 查显卡 | `ollamallm RTX 4090` |
+| 搜模型 | `ollamallm qwen` |
+| 搜模型+设备 | `ollamallm qwen M2 Pro 16GB` |
 
 CPU 不确定时（如 `MacBook Pro 2020`），工具会**自动弹出选项让你按 1 或 2 选择**，无需额外参数。
+
+> 模型搜索详见 [FEATURE_SEARCH.md](FEATURE_SEARCH.md)：关键词在前，设备在后。
 
 ---
 
@@ -46,6 +50,7 @@ CPU 不确定时（如 `MacBook Pro 2020`），工具会**自动弹出选项让�
 | Intel / Apple 芯片混淆 | 同名 Mac 产品线（如 MacBook Pro 2020）可能为 Intel 或 M 系列，推荐结果差异极大 |
 | 型号规格分散 | Mac 型号（M2 Pro 18GB vs M2 Pro 32GB）与显卡型号（3060 8GB vs 3060 12GB）差异大 |
 | 模型_catalog 变化快 | Ollama 库持续更新，用户难以维护对照表 |
+| 按品牌/系列筛选 | 只想看 qwen 或 llama，全量列表太长 |
 
 ### 2.2 产品机会
 

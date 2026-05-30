@@ -5,9 +5,10 @@ from __future__ import annotations
 import sys
 
 from ollamallm.detector.darwin import detect_local
-from ollamallm.matcher.engine import match_models
-from ollamallm.models import CpuAmbiguousError, CpuFamily
-from ollamallm.output.formatter import HELP_TEXT, format_results
+from ollamallm.matcher.engine import filter_by_keyword, match_models
+from ollamallm.models import CpuAmbiguousError, CpuFamily, HardwareProfile
+from ollamallm.output.formatter import HELP_TEXT, format_no_search_results, format_results
+from ollamallm.query_parser import ParsedQuery, parse_query
 from ollamallm.resolver.device import resolve_device
 
 
@@ -31,8 +32,13 @@ def main() -> None:
             _run_local()
             return
 
-    device_text = " ".join(args)
-    _run_device(device_text)
+    query = parse_query(" ".join(args))
+    if query.mode == "local":
+        _run_local()
+    elif query.mode == "device":
+        _run_device(query.device_text or "")
+    elif query.mode == "search":
+        _run_search(query.keyword or "", query.device_text)
 
 
 def _run_local() -> None:
@@ -45,9 +51,40 @@ def _run_local() -> None:
     print(format_results(profile, recommendations, from_local=True))
 
 
+def _run_search(keyword: str, device_text: str | None) -> None:
+    if device_text:
+        try:
+            profile = _resolve_device(device_text)
+        except SystemExit:
+            return
+        from_local = False
+    else:
+        try:
+            profile = detect_local()
+        except RuntimeError as exc:
+            print(f"错误: {exc}", file=sys.stderr)
+            sys.exit(1)
+        from_local = True
+
+    recommendations = filter_by_keyword(match_models(profile), keyword)
+    if not recommendations:
+        print(format_no_search_results(keyword))
+        sys.exit(1)
+    print(format_results(profile, recommendations, from_local=from_local, search_keyword=keyword))
+
+
 def _run_device(text: str, cpu_override: CpuFamily | None = None) -> None:
     try:
-        profile = resolve_device(text, cpu_override=cpu_override)
+        profile = _resolve_device(text, cpu_override=cpu_override)
+    except SystemExit:
+        return
+    recommendations = match_models(profile)
+    print(format_results(profile, recommendations, from_local=False))
+
+
+def _resolve_device(text: str, cpu_override: CpuFamily | None = None) -> HardwareProfile:
+    try:
+        return resolve_device(text, cpu_override=cpu_override)
     except CpuAmbiguousError as exc:
         if not sys.stdin.isatty():
             print(exc.message(), file=sys.stderr)
@@ -55,19 +92,14 @@ def _run_device(text: str, cpu_override: CpuFamily | None = None) -> None:
         print(exc.message())
         choice = input("> ").strip().lower()
         if choice in ("1", "apple", "m1"):
-            _run_device(text, cpu_override=CpuFamily.APPLE)
-            return
+            return _resolve_device(text, cpu_override=CpuFamily.APPLE)
         if choice in ("2", "intel"):
-            _run_device(text, cpu_override=CpuFamily.INTEL)
-            return
+            return _resolve_device(text, cpu_override=CpuFamily.INTEL)
         print("请输入 1 或 2", file=sys.stderr)
         sys.exit(1)
     except ValueError as exc:
         print(str(exc), file=sys.stderr)
         sys.exit(1)
-
-    recommendations = match_models(profile)
-    print(format_results(profile, recommendations, from_local=False))
 
 
 if __name__ == "__main__":

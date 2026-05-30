@@ -11,13 +11,49 @@ FORMULA="$ROOT/Formula/ollamallm.rb"
 mkdir -p "$DIST"
 rm -f "$DIST/$ARCHIVE"
 
-tar -czf "$DIST/$ARCHIVE" -C "$ROOT" \
-  --exclude '.git' \
-  --exclude 'dist' \
-  --exclude '*.egg-info' \
-  --exclude '__pycache__' \
-  --exclude '.cursor' \
-  pyproject.toml README.md LICENSE ollamallm docs Formula
+# Reproducible tarball (stable SHA256 for Homebrew; macOS tar lacks --mtime)
+python3 - "$ROOT" "$DIST/$ARCHIVE" <<'PY'
+import os, sys, tarfile, time
+from pathlib import Path
+
+root = Path(sys.argv[1])
+archive = Path(sys.argv[2])
+fixed_mtime = 0
+
+def add_dir(tar, base: Path, rel: Path = Path(".")):
+    for path in sorted(base.rglob("*")):
+        if path.is_dir():
+            continue
+        arcname = str(rel / path.relative_to(base))
+        if arcname.startswith(".git") or "/.git" in arcname:
+            continue
+        if arcname.startswith("dist") or "/dist/" in arcname:
+            continue
+        if "__pycache__" in arcname or arcname.endswith(".egg-info"):
+            continue
+        if ".cursor" in arcname.split("/"):
+            continue
+        info = tar.gettarinfo(str(path), arcname=arcname)
+        info.mtime = fixed_mtime
+        info.uid = info.gid = 0
+        info.uname = info.gname = "root"
+        with open(path, "rb") as f:
+            tar.addfile(info, f)
+
+includes = ["pyproject.toml", "README.md", "LICENSE", "ollamallm", "docs"]
+with tarfile.open(archive, "w:gz", format=tarfile.GNU_FORMAT) as tar:
+    for name in includes:
+        p = root / name
+        if p.is_dir():
+            add_dir(tar, p, Path(name))
+        elif p.exists():
+            info = tar.gettarinfo(str(p), arcname=name)
+            info.mtime = fixed_mtime
+            info.uid = info.gid = 0
+            info.uname = info.gname = "root"
+            with open(p, "rb") as f:
+                tar.addfile(info, f)
+PY
 
 SHA="$(shasum -a 256 "$DIST/$ARCHIVE" | awk '{print $1}')"
 

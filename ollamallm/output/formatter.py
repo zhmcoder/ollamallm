@@ -19,6 +19,7 @@ def format_results(
     recommendations: list[Recommendation],
     *,
     from_local: bool,
+    search_keyword: str | None = None,
 ) -> str:
     if os.environ.get("OLLAMALLM_JSON"):
         return _format_json(profile, recommendations)
@@ -27,7 +28,7 @@ def format_results(
     not_runnable = [r for r in recommendations if r.tier == Tier.NO]
     total_runnable = len(runnable)
     total_no = len(not_runnable)
-    recommendations = runnable + not_runnable[:8]
+    recommendations = runnable + not_runnable[: (5 if search_keyword else 8)]
 
     lines: list[str] = []
     header = "检测到本机配置" if from_local else "设备规格（来自型号库）"
@@ -65,7 +66,13 @@ def format_results(
         lines.append("⚠️  Intel Mac 说明: Ollama 主要使用 CPU 推理，大模型速度较慢，建议 7B 以下模型")
 
     lines.append("")
-    lines.append("推荐 Ollama 模型")
+    if search_keyword:
+        runnable_count = sum(1 for r in recommendations if r.tier != Tier.NO)
+        lines.append(
+            f"搜索「{search_keyword}」— 找到 {len(recommendations)} 个模型，{runnable_count} 个可安装"
+        )
+    else:
+        lines.append("推荐 Ollama 模型")
     lines.append("─" * 38)
 
     shown_no = 0
@@ -91,14 +98,30 @@ def format_results(
             lines.append(f"{icon} {name} {size} {speed} {pull}")
 
     lines.append("")
-    runnable_count = total_runnable
-    no_shown = min(8, total_no)
-    summary = f"共 {runnable_count} 个可安装模型"
-    if total_no:
-        summary += f"（另有 {total_no} 个内存不足" + (f"，展示前 {no_shown} 个" if total_no > no_shown else "") + "）"
-    lines.append(summary)
+    if search_keyword:
+        no_shown = min(5, total_no)
+        if total_no:
+            lines.append(f"另有 {total_no} 个匹配模型内存不足" + (f"（展示前 {no_shown} 个）" if total_no > no_shown else ""))
+    else:
+        runnable_count = total_runnable
+        no_shown = min(8, total_no)
+        summary = f"共 {runnable_count} 个可安装模型"
+        if total_no:
+            summary += f"（另有 {total_no} 个内存不足" + (f"，展示前 {no_shown} 个" if total_no > no_shown else "") + "）"
+        lines.append(summary)
     lines.append("提示: 复制 ollama pull 命令即可安装")
     return "\n".join(lines)
+
+
+def format_no_search_results(keyword: str) -> str:
+    return f"""未找到包含「{keyword}」的模型。
+
+你是否想查询设备型号？例如:
+  ollamallm M2 Pro 16GB
+  ollamallm RTX 4090
+
+常用模型关键词: qwen, llama, mistral, deepseek, gemma
+"""
 
 
 def _cpu_label(profile: HardwareProfile) -> str:
@@ -150,16 +173,19 @@ HELP_TEXT = """\
 ollamallm — 根据硬件推荐可安装的 Ollama 模型
 
 用法:
-  ollamallm                  查本机
-  ollamallm <型号>           查指定设备
+  ollamallm                    查本机，列出全部可安装模型
+  ollamallm <型号>             查指定设备
+  ollamallm <关键词>           搜模型（基于本机）
+  ollamallm <关键词> <型号>    搜模型（基于指定设备）
 
 示例:
   ollamallm
+  ollamallm qwen
+  ollamallm llama M2 Pro 16GB
+  ollamallm deepseek RTX 4090
   ollamallm M2 Pro 16GB
-  ollamallm MacBook Air M1 8GB
-  ollamallm MacBook Pro 2019
   ollamallm MacBook Pro 2020 Intel
   ollamallm RTX 4090
 
-型号里加上 Intel 或 M1 可指定 CPU 类型。
+关键词在前，设备在后。型号里加上 Intel 或 M1 可指定 CPU 类型。
 """

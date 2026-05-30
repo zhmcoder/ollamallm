@@ -1,0 +1,884 @@
+[
+  {
+    "name": "llama3.2",
+    "tag": "1b",
+    "params_b": 1.24,
+    "size_q4_gb": 0.8,
+    "type": "dense"
+  },
+  {
+    "name": "llama3.2",
+    "tag": "3b",
+    "params_b": 3.21,
+    "size_q4_gb": 1.9,
+    "type": "dense"
+  },
+  {
+    "name": "llama3.1",
+    "tag": "8b",
+    "params_b": 8.03,
+    "size_q4_gb": 4.9,
+    "type": "dense"
+  },
+  {
+    "name": "llama3.1",
+    "tag": "70b",
+    "params_b": 70.6,
+    "size_q4_gb": 40.0,
+    "type": "dense"
+  },
+  {
+    "name": "llama3.1",
+    "tag": "405b",
+    "params_b": 405,
+    "size_q4_gb": 229.0,
+    "type": "dense"
+  },
+  {
+    "name": "llama3.3",
+    "tag": "70b",
+    "params_b": 70.6,
+    "size_q4_gb": 40.0,
+    "type": "dense"
+  },
+  {
+    "name": "llama3",
+    "tag": "8b",
+    "params_b": 8.0,
+    "size_q4_gb": 4.7,
+    "type": "dense"
+  },
+  {
+    "name": "llama3",
+    "tag": "70b",
+    "params_b": 70.0,
+    "size_q4_gb": 39.0,
+    "type": "dense"
+  },
+  {
+    "name": "llama2",
+    "tag": "7b",
+    "params_b": 7.0,
+    "size_q4_gb": 4.1,
+    "type": "dense"
+  },
+  {
+    "name": "llama2",
+    "tag": "13b",
+    "params_b": 13.0,
+    "size_q4_gb": 7.8,
+    "type": "dense"
+  },
+  {
+    "name": "llama2",
+    "tag": "70b",
+    "params_b": 70.0,
+    "size_q4_gb": 39.0,
+    "type": "dense"
+  },
+  {
+    "name": "qwen2.5",
+    "tag": "0.5b",
+    "params_b": 0.49,
+    "size_q4_gb": 0.4,
+    "type": "dense"
+  },
+  {
+    "name": "qwen2.5",
+    "tag": "1.5b",
+    "params_b": 1.54,
+    "size_q4_gb": 1.0,
+    "type": "dense"
+  },
+  {
+    "name": "qwen2.5",
+    "tag": "3b",
+    "params_b": 3.09,
+    "size_q4_gb": 1.9,
+    "type": "dense"
+  },
+  {
+    "name": "qwen2.5",
+    "tag": "7b",
+    "params_b": 7.62,
+    "size_q4_gb": 4.4,
+    "type": "dense"
+  },
+  {
+    "name": "qwen2.5",
+    "tag": "14b",
+    "params_b": 14.8,
+    "size_q4_gb": 8.7,
+    "type": "dense"
+  },
+  {
+    "name": "qwen2.5",
+    "tag": "32b",
+    "params_b": 32.5,
+    "size_q4_gb": 18.8,
+    "type": "dense"
+  },
+  {
+    "name": "qwen2.5",
+    "tag": "72b",
+    "params_b": 72.7,
+    "size_q4_gb": 42.0,
+    "type": "dense"
+  },
+  {
+    "name": "qwen2.5-coder",
+    "tag": "0.5b",
+    "params_b": 0.49,
+    "size_q4_gb": 0.4,
+    "type": "dense"
+  },
+  {
+    "name": "qwen2.5-coder",
+    "tag": "1.5b",
+    "params_b": 1.54,
+    "size_q4_gb": 1.0,
+    "type": "dense"
+  },
+  {
+    "name": "qwen2.5-coder",
+    "tag": "3b",
+    "params_b": 3.09,
+    "size_q4_gb": 1.9,
+    "type": "dense"
+  },
+  {
+    "name": "qwen2.5-coder",
+    "tag": "7b",
+    "params_b": 7.62,
+    "size_q4_gb": 4.4,
+    "type": "dense"
+  },
+  {
+    "name": "qwen2.5-coder",
+    "tag": "14b",
+    "params_b": 14.8,
+    "size_q4_gb": 8.7,
+    "type": "dense"
+  },
+  {
+    "name": "qwen2.5-coder",
+    "tag": "32b",
+    "params_b": 32.5,
+    "size_q4_gb": 18.8,
+    "type": "dense"
+  },
+  {
+    "name": "qwen2.5-coder",
+    "tag": "1.5b-instruct",
+    "params_b": 1.54,
+    "size_q4_gb": 1.0,
+    "type": "dense"
+  },
+  {
+    "name": "qwen2.5-coder",
+    "tag": "7b-instruct",
+    "params_b": 7.62,
+    "size_q4_gb": 4.4,
+    "type": "dense"
+  },
+  {
+    "name": "qwen2",
+    "tag": "0.5b",
+    "params_b": 0.49,
+    "size_q4_gb": 0.4,
+    "type": "dense"
+  },
+  {
+    "name": "qwen2",
+    "tag": "1.5b",
+    "params_b": 1.54,
+    "size_q4_gb": 1.0,
+    "type": "dense"
+  },
+  {
+    "name": "qwen2",
+    "tag": "7b",
+    "params_b": 7.62,
+    "size_q4_gb": 4.4,
+    "type": "dense"
+  },
+  {
+    "name": "qwen2",
+    "tag": "72b",
+    "params_b": 72.7,
+    "size_q4_gb": 42.0,
+    "type": "dense"
+  },
+  {
+    "name": "qwen3",
+    "tag": "0.6b",
+    "params_b": 0.6,
+    "size_q4_gb": 0.4,
+    "type": "dense"
+  },
+  {
+    "name": "qwen3",
+    "tag": "1.7b",
+    "params_b": 1.7,
+    "size_q4_gb": 1.1,
+    "type": "dense"
+  },
+  {
+    "name": "qwen3",
+    "tag": "4b",
+    "params_b": 4.0,
+    "size_q4_gb": 2.5,
+    "type": "dense"
+  },
+  {
+    "name": "qwen3",
+    "tag": "8b",
+    "params_b": 8.2,
+    "size_q4_gb": 5.0,
+    "type": "dense"
+  },
+  {
+    "name": "qwen3",
+    "tag": "14b",
+    "params_b": 14.8,
+    "size_q4_gb": 8.3,
+    "type": "dense"
+  },
+  {
+    "name": "qwen3",
+    "tag": "30b-a3b",
+    "params_b": 30,
+    "size_q4_gb": 17.0,
+    "type": "moe"
+  },
+  {
+    "name": "qwen3",
+    "tag": "32b",
+    "params_b": 32.8,
+    "size_q4_gb": 18.4,
+    "type": "dense"
+  },
+  {
+    "name": "qwen3",
+    "tag": "235b-a22b",
+    "params_b": 235,
+    "size_q4_gb": 132.0,
+    "type": "moe"
+  },
+  {
+    "name": "qwen3.5",
+    "tag": "9b",
+    "params_b": 9.0,
+    "size_q4_gb": 6.6,
+    "type": "dense"
+  },
+  {
+    "name": "qwen3.5",
+    "tag": "35b-a3b",
+    "params_b": 35,
+    "size_q4_gb": 24.0,
+    "type": "moe"
+  },
+  {
+    "name": "qwen3.5",
+    "tag": "397b-a17b",
+    "params_b": 397,
+    "size_q4_gb": 214.0,
+    "type": "moe"
+  },
+  {
+    "name": "mistral",
+    "tag": "7b",
+    "params_b": 7.2,
+    "size_q4_gb": 4.0,
+    "type": "dense"
+  },
+  {
+    "name": "mixtral",
+    "tag": "8x7b",
+    "params_b": 46.7,
+    "size_q4_gb": 26.0,
+    "type": "moe"
+  },
+  {
+    "name": "mixtral",
+    "tag": "8x22b",
+    "params_b": 141,
+    "size_q4_gb": 80.0,
+    "type": "moe"
+  },
+  {
+    "name": "gemma",
+    "tag": "2b",
+    "params_b": 2.0,
+    "size_q4_gb": 1.5,
+    "type": "dense"
+  },
+  {
+    "name": "gemma",
+    "tag": "7b",
+    "params_b": 7.0,
+    "size_q4_gb": 4.5,
+    "type": "dense"
+  },
+  {
+    "name": "gemma2",
+    "tag": "2b",
+    "params_b": 2.0,
+    "size_q4_gb": 1.5,
+    "type": "dense"
+  },
+  {
+    "name": "gemma2",
+    "tag": "9b",
+    "params_b": 9.0,
+    "size_q4_gb": 6.0,
+    "type": "dense"
+  },
+  {
+    "name": "gemma2",
+    "tag": "27b",
+    "params_b": 27.0,
+    "size_q4_gb": 16.0,
+    "type": "dense"
+  },
+  {
+    "name": "gemma3",
+    "tag": "1b",
+    "params_b": 1.0,
+    "size_q4_gb": 0.8,
+    "type": "dense"
+  },
+  {
+    "name": "gemma3",
+    "tag": "4b",
+    "params_b": 4.0,
+    "size_q4_gb": 2.5,
+    "type": "dense"
+  },
+  {
+    "name": "gemma3",
+    "tag": "12b",
+    "params_b": 12.0,
+    "size_q4_gb": 7.0,
+    "type": "dense"
+  },
+  {
+    "name": "gemma3",
+    "tag": "27b",
+    "params_b": 27.0,
+    "size_q4_gb": 16.0,
+    "type": "dense"
+  },
+  {
+    "name": "phi3",
+    "tag": "mini",
+    "params_b": 3.8,
+    "size_q4_gb": 2.2,
+    "type": "dense"
+  },
+  {
+    "name": "phi3",
+    "tag": "medium",
+    "params_b": 14.0,
+    "size_q4_gb": 8.0,
+    "type": "dense"
+  },
+  {
+    "name": "phi4",
+    "tag": "mini",
+    "params_b": 3.8,
+    "size_q4_gb": 2.4,
+    "type": "dense"
+  },
+  {
+    "name": "phi4",
+    "tag": "14b",
+    "params_b": 14.0,
+    "size_q4_gb": 8.5,
+    "type": "dense"
+  },
+  {
+    "name": "deepseek-r1",
+    "tag": "1.5b",
+    "params_b": 1.5,
+    "size_q4_gb": 1.0,
+    "type": "dense"
+  },
+  {
+    "name": "deepseek-r1",
+    "tag": "7b",
+    "params_b": 7.0,
+    "size_q4_gb": 4.5,
+    "type": "dense"
+  },
+  {
+    "name": "deepseek-r1",
+    "tag": "8b",
+    "params_b": 8.0,
+    "size_q4_gb": 5.0,
+    "type": "dense"
+  },
+  {
+    "name": "deepseek-r1",
+    "tag": "14b",
+    "params_b": 14.0,
+    "size_q4_gb": 9.0,
+    "type": "dense"
+  },
+  {
+    "name": "deepseek-r1",
+    "tag": "32b",
+    "params_b": 32.8,
+    "size_q4_gb": 18.4,
+    "type": "dense"
+  },
+  {
+    "name": "deepseek-r1",
+    "tag": "70b",
+    "params_b": 70.0,
+    "size_q4_gb": 40.0,
+    "type": "dense"
+  },
+  {
+    "name": "deepseek-r1",
+    "tag": "671b",
+    "params_b": 671,
+    "size_q4_gb": 375.0,
+    "type": "moe"
+  },
+  {
+    "name": "deepseek-coder-v2",
+    "tag": "16b",
+    "params_b": 16.0,
+    "size_q4_gb": 9.5,
+    "type": "dense"
+  },
+  {
+    "name": "deepseek-coder-v2",
+    "tag": "236b",
+    "params_b": 236,
+    "size_q4_gb": 130.0,
+    "type": "moe"
+  },
+  {
+    "name": "deepseek-v3.1",
+    "tag": "671b",
+    "params_b": 671,
+    "size_q4_gb": 375.0,
+    "type": "moe"
+  },
+  {
+    "name": "deepseek-v3.2",
+    "tag": "latest",
+    "params_b": 671,
+    "size_q4_gb": 375.0,
+    "type": "moe"
+  },
+  {
+    "name": "codellama",
+    "tag": "7b",
+    "params_b": 7.0,
+    "size_q4_gb": 4.2,
+    "type": "dense"
+  },
+  {
+    "name": "codellama",
+    "tag": "13b",
+    "params_b": 13.0,
+    "size_q4_gb": 8.5,
+    "type": "dense"
+  },
+  {
+    "name": "codellama",
+    "tag": "34b",
+    "params_b": 34.0,
+    "size_q4_gb": 20.0,
+    "type": "dense"
+  },
+  {
+    "name": "codellama",
+    "tag": "70b",
+    "params_b": 70.0,
+    "size_q4_gb": 40.0,
+    "type": "dense"
+  },
+  {
+    "name": "starcoder2",
+    "tag": "3b",
+    "params_b": 3.0,
+    "size_q4_gb": 1.8,
+    "type": "dense"
+  },
+  {
+    "name": "starcoder2",
+    "tag": "7b",
+    "params_b": 7.0,
+    "size_q4_gb": 4.2,
+    "type": "dense"
+  },
+  {
+    "name": "starcoder2",
+    "tag": "15b",
+    "params_b": 15.0,
+    "size_q4_gb": 9.0,
+    "type": "dense"
+  },
+  {
+    "name": "yi",
+    "tag": "6b",
+    "params_b": 6.0,
+    "size_q4_gb": 3.8,
+    "type": "dense"
+  },
+  {
+    "name": "yi",
+    "tag": "9b",
+    "params_b": 9.0,
+    "size_q4_gb": 5.5,
+    "type": "dense"
+  },
+  {
+    "name": "yi",
+    "tag": "34b",
+    "params_b": 34.0,
+    "size_q4_gb": 20.0,
+    "type": "dense"
+  },
+  {
+    "name": "solar",
+    "tag": "10.7b",
+    "params_b": 10.7,
+    "size_q4_gb": 6.5,
+    "type": "dense"
+  },
+  {
+    "name": "command-r",
+    "tag": "35b",
+    "params_b": 35.0,
+    "size_q4_gb": 20.0,
+    "type": "dense"
+  },
+  {
+    "name": "command-r-plus",
+    "tag": "104b",
+    "params_b": 104.0,
+    "size_q4_gb": 60.0,
+    "type": "dense"
+  },
+  {
+    "name": "internlm2",
+    "tag": "7b",
+    "params_b": 7.0,
+    "size_q4_gb": 4.5,
+    "type": "dense"
+  },
+  {
+    "name": "internlm2",
+    "tag": "20b",
+    "params_b": 20.0,
+    "size_q4_gb": 12.0,
+    "type": "dense"
+  },
+  {
+    "name": "falcon",
+    "tag": "7b",
+    "params_b": 7.0,
+    "size_q4_gb": 4.2,
+    "type": "dense"
+  },
+  {
+    "name": "falcon",
+    "tag": "40b",
+    "params_b": 40.0,
+    "size_q4_gb": 24.0,
+    "type": "dense"
+  },
+  {
+    "name": "falcon",
+    "tag": "180b",
+    "params_b": 180.0,
+    "size_q4_gb": 100.0,
+    "type": "dense"
+  },
+  {
+    "name": "vicuna",
+    "tag": "7b",
+    "params_b": 7.0,
+    "size_q4_gb": 4.2,
+    "type": "dense"
+  },
+  {
+    "name": "vicuna",
+    "tag": "13b",
+    "params_b": 13.0,
+    "size_q4_gb": 8.0,
+    "type": "dense"
+  },
+  {
+    "name": "openchat",
+    "tag": "7b",
+    "params_b": 7.0,
+    "size_q4_gb": 4.2,
+    "type": "dense"
+  },
+  {
+    "name": "neural-chat",
+    "tag": "7b",
+    "params_b": 7.0,
+    "size_q4_gb": 4.2,
+    "type": "dense"
+  },
+  {
+    "name": "dolphin-mixtral",
+    "tag": "8x7b",
+    "params_b": 46.7,
+    "size_q4_gb": 26.0,
+    "type": "moe"
+  },
+  {
+    "name": "dolphin-llama3",
+    "tag": "8b",
+    "params_b": 8.0,
+    "size_q4_gb": 4.9,
+    "type": "dense"
+  },
+  {
+    "name": "granite3-dense",
+    "tag": "2b",
+    "params_b": 2.0,
+    "size_q4_gb": 1.3,
+    "type": "dense"
+  },
+  {
+    "name": "granite3-dense",
+    "tag": "8b",
+    "params_b": 8.0,
+    "size_q4_gb": 4.8,
+    "type": "dense"
+  },
+  {
+    "name": "granite3.1-dense",
+    "tag": "2b",
+    "params_b": 2.0,
+    "size_q4_gb": 1.3,
+    "type": "dense"
+  },
+  {
+    "name": "granite3.1-dense",
+    "tag": "8b",
+    "params_b": 8.0,
+    "size_q4_gb": 4.8,
+    "type": "dense"
+  },
+  {
+    "name": "smollm2",
+    "tag": "360m",
+    "params_b": 0.36,
+    "size_q4_gb": 0.3,
+    "type": "dense"
+  },
+  {
+    "name": "smollm2",
+    "tag": "1.7b",
+    "params_b": 1.7,
+    "size_q4_gb": 1.1,
+    "type": "dense"
+  },
+  {
+    "name": "llava",
+    "tag": "7b",
+    "params_b": 7.0,
+    "size_q4_gb": 5.5,
+    "type": "dense"
+  },
+  {
+    "name": "llava",
+    "tag": "13b",
+    "params_b": 13.0,
+    "size_q4_gb": 9.0,
+    "type": "dense"
+  },
+  {
+    "name": "llava-llama3",
+    "tag": "8b",
+    "params_b": 8.0,
+    "size_q4_gb": 5.5,
+    "type": "dense"
+  },
+  {
+    "name": "llama3.2-vision",
+    "tag": "11b",
+    "params_b": 11.0,
+    "size_q4_gb": 7.5,
+    "type": "dense"
+  },
+  {
+    "name": "llama3.2-vision",
+    "tag": "90b",
+    "params_b": 90.0,
+    "size_q4_gb": 52.0,
+    "type": "dense"
+  },
+  {
+    "name": "minicpm-v",
+    "tag": "latest",
+    "params_b": 8.0,
+    "size_q4_gb": 5.5,
+    "type": "dense"
+  },
+  {
+    "name": "moondream",
+    "tag": "latest",
+    "params_b": 1.6,
+    "size_q4_gb": 1.2,
+    "type": "dense"
+  },
+  {
+    "name": "qwen2.5vl",
+    "tag": "3b",
+    "params_b": 3.0,
+    "size_q4_gb": 2.0,
+    "type": "dense"
+  },
+  {
+    "name": "qwen2.5vl",
+    "tag": "7b",
+    "params_b": 7.0,
+    "size_q4_gb": 5.0,
+    "type": "dense"
+  },
+  {
+    "name": "qwen2.5vl",
+    "tag": "32b",
+    "params_b": 32.0,
+    "size_q4_gb": 20.0,
+    "type": "dense"
+  },
+  {
+    "name": "qwen3-vl",
+    "tag": "8b",
+    "params_b": 8.0,
+    "size_q4_gb": 5.5,
+    "type": "dense"
+  },
+  {
+    "name": "qwen3-vl",
+    "tag": "30b-a3b",
+    "params_b": 30,
+    "size_q4_gb": 17.0,
+    "type": "moe"
+  },
+  {
+    "name": "nemotron-mini",
+    "tag": "4b",
+    "params_b": 4.0,
+    "size_q4_gb": 2.5,
+    "type": "dense"
+  },
+  {
+    "name": "nemotron-3-nano",
+    "tag": "30b",
+    "params_b": 30,
+    "size_q4_gb": 24.0,
+    "type": "moe"
+  },
+  {
+    "name": "gpt-oss",
+    "tag": "20b",
+    "params_b": 20.0,
+    "size_q4_gb": 12.0,
+    "type": "dense"
+  },
+  {
+    "name": "gpt-oss",
+    "tag": "120b",
+    "params_b": 120.0,
+    "size_q4_gb": 65.0,
+    "type": "dense"
+  },
+  {
+    "name": "ministral-3",
+    "tag": "3b",
+    "params_b": 3.0,
+    "size_q4_gb": 2.0,
+    "type": "dense"
+  },
+  {
+    "name": "ministral-3",
+    "tag": "8b",
+    "params_b": 8.0,
+    "size_q4_gb": 5.0,
+    "type": "dense"
+  },
+  {
+    "name": "ministral-3",
+    "tag": "14b",
+    "params_b": 14.0,
+    "size_q4_gb": 9.0,
+    "type": "dense"
+  },
+  {
+    "name": "devstral-small-2",
+    "tag": "24b",
+    "params_b": 24.0,
+    "size_q4_gb": 14.0,
+    "type": "dense"
+  },
+  {
+    "name": "devstral-2",
+    "tag": "123b",
+    "params_b": 123.0,
+    "size_q4_gb": 72.0,
+    "type": "dense"
+  },
+  {
+    "name": "glm4",
+    "tag": "9b",
+    "params_b": 9.0,
+    "size_q4_gb": 6.0,
+    "type": "dense"
+  },
+  {
+    "name": "glm-4.6",
+    "tag": "latest",
+    "params_b": 355,
+    "size_q4_gb": 200.0,
+    "type": "moe"
+  },
+  {
+    "name": "glm-4.7",
+    "tag": "latest",
+    "params_b": 355,
+    "size_q4_gb": 200.0,
+    "type": "moe"
+  },
+  {
+    "name": "glm-5",
+    "tag": "latest",
+    "params_b": 744,
+    "size_q4_gb": 400.0,
+    "type": "moe"
+  },
+  {
+    "name": "gemma4",
+    "tag": "e2b",
+    "params_b": 2.0,
+    "size_q4_gb": 1.5,
+    "type": "dense"
+  },
+  {
+    "name": "gemma4",
+    "tag": "e4b",
+    "params_b": 4.0,
+    "size_q4_gb": 2.8,
+    "type": "dense"
+  },
+  {
+    "name": "gemma4",
+    "tag": "31b",
+    "params_b": 31.0,
+    "size_q4_gb": 18.0,
+    "type": "dense"
+  }
+]

@@ -1,0 +1,13 @@
+[
+  {"model_id": "MacBookAir8,1", "product": "MacBook Air 2018", "cpu_family": "intel"},
+  {"model_id": "MacBookAir9,1", "product": "MacBook Air 2019", "cpu_family": "intel"},
+  {"model_id": "MacBookAir10,1", "product": "MacBook Air 2020", "cpu_family": "apple", "chip": "M1"},
+  {"model_id": "MacBookPro16,1", "product": "MacBook Pro 16\" 2019", "cpu_family": "intel"},
+  {"model_id": "MacBookPro16,2", "product": "MacBook Pro 13\" 2020 Intel", "cpu_family": "intel"},
+  {"model_id": "MacBookPro17,1", "product": "MacBook Pro 13\" 2020", "cpu_family": "apple", "chip": "M1"},
+  {"model_id": "MacBookPro18,1", "product": "MacBook Pro 16\" 2021", "cpu_family": "apple", "chip": "M1 Pro"},
+  {"model_id": "Macmini8,1", "product": "Mac mini 2018", "cpu_family": "intel"},
+  {"model_id": "Macmini9,1", "product": "Mac mini 2020", "cpu_family": "apple", "chip": "M1"},
+  {"model_id": "iMac20,1", "product": "iMac 27\" 2020", "cpu_family": "intel"},
+  {"model_id": "iMac24,1", "product": "iMac 24\" 2021", "cpu_family": "apple", "chip": "M1"}
+]

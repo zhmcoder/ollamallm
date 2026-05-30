@@ -1,0 +1,16 @@
+[
+  {"chip": "M1", "memory_gb": [8, 16], "bandwidth_gbs": 68, "gpu_cores": 7, "default_memory_gb": 8},
+  {"chip": "M1 Pro", "memory_gb": [16, 32], "bandwidth_gbs": 200, "gpu_cores": 16, "default_memory_gb": 16},
+  {"chip": "M1 Max", "memory_gb": [32, 64], "bandwidth_gbs": 400, "gpu_cores": 32, "default_memory_gb": 32},
+  {"chip": "M1 Ultra", "memory_gb": [64, 128], "bandwidth_gbs": 800, "gpu_cores": 64, "default_memory_gb": 64},
+  {"chip": "M2", "memory_gb": [8, 16, 24], "bandwidth_gbs": 100, "gpu_cores": 10, "default_memory_gb": 8},
+  {"chip": "M2 Pro", "memory_gb": [16, 32], "bandwidth_gbs": 200, "gpu_cores": 19, "default_memory_gb": 16},
+  {"chip": "M2 Max", "memory_gb": [32, 96], "bandwidth_gbs": 400, "gpu_cores": 38, "default_memory_gb": 32},
+  {"chip": "M2 Ultra", "memory_gb": [64, 192], "bandwidth_gbs": 800, "gpu_cores": 76, "default_memory_gb": 64},
+  {"chip": "M3", "memory_gb": [8, 16, 24], "bandwidth_gbs": 100, "gpu_cores": 10, "default_memory_gb": 8},
+  {"chip": "M3 Pro", "memory_gb": [18, 36], "bandwidth_gbs": 150, "gpu_cores": 14, "default_memory_gb": 18},
+  {"chip": "M3 Max", "memory_gb": [36, 128], "bandwidth_gbs": 400, "gpu_cores": 40, "default_memory_gb": 36},
+  {"chip": "M4", "memory_gb": [16, 32], "bandwidth_gbs": 120, "gpu_cores": 10, "default_memory_gb": 16},
+  {"chip": "M4 Pro", "memory_gb": [24, 48, 64], "bandwidth_gbs": 273, "gpu_cores": 20, "default_memory_gb": 24},
+  {"chip": "M4 Max", "memory_gb": [36, 128], "bandwidth_gbs": 546, "gpu_cores": 40, "default_memory_gb": 36}
+]

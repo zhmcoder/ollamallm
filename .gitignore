@@ -1,0 +1,7 @@
+dist/
+*.egg-info/
+__pycache__/
+*.py[cod]
+.venv/
+.DS_Store
+*.tar.gz

@@ -1,0 +1,12 @@
+[
+  {"name": "RTX 4090", "aliases": ["4090", "rtx4090"], "vram_gb": 24, "bandwidth_gbs": 1008},
+  {"name": "RTX 4080", "aliases": ["4080"], "vram_gb": 16, "bandwidth_gbs": 717},
+  {"name": "RTX 4070", "aliases": ["4070"], "vram_gb": 12, "bandwidth_gbs": 504},
+  {"name": "RTX 4060 Ti", "aliases": ["4060 ti", "4060ti"], "vram_gb": 16, "bandwidth_gbs": 288, "variants": [{"suffix": "16GB", "vram_gb": 16}, {"suffix": "8GB", "vram_gb": 8}]},
+  {"name": "RTX 4060", "aliases": ["4060"], "vram_gb": 8, "bandwidth_gbs": 272},
+  {"name": "RTX 3090", "aliases": ["3090"], "vram_gb": 24, "bandwidth_gbs": 936},
+  {"name": "RTX 3080", "aliases": ["3080"], "vram_gb": 10, "bandwidth_gbs": 760, "variants": [{"suffix": "12GB", "vram_gb": 12}]},
+  {"name": "RTX 3060", "aliases": ["3060"], "vram_gb": 12, "bandwidth_gbs": 360, "variants": [{"suffix": "12GB", "vram_gb": 12}, {"suffix": "8GB", "vram_gb": 8}]},
+  {"name": "RTX 5070", "aliases": ["5070"], "vram_gb": 12, "bandwidth_gbs": 672},
+  {"name": "RTX 5090", "aliases": ["5090"], "vram_gb": 32, "bandwidth_gbs": 1792}
+]

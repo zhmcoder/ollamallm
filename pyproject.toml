@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ollamallm"
+version = "0.1.0"
+description = "Recommend Ollama models based on your Mac or GPU hardware"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = []
+
+[project.scripts]
+ollamallm = "ollamallm.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["ollamallm*"]
+
+[tool.setuptools.package-data]
+ollamallm = ["catalog/*.json"]

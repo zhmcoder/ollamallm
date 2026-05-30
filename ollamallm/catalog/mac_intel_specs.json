@@ -1,0 +1,11 @@
+[
+  {"product": "MacBook Air 2018", "chip": "Intel Core i5-8210Y", "memory_gb": [8, 16], "default_memory_gb": 8, "gpu": "Intel UHD 617"},
+  {"product": "MacBook Air 2019", "chip": "Intel Core i5-8210Y", "memory_gb": [8, 16], "default_memory_gb": 8, "gpu": "Intel UHD 617"},
+  {"product": "MacBook Air 2020 Intel", "chip": "Intel Core i5-8210Y", "memory_gb": [8, 16], "default_memory_gb": 8, "gpu": "Intel Iris Plus"},
+  {"product": "MacBook Pro 13 2020 Intel", "chip": "Intel Core i5-1038NG7", "memory_gb": [16, 32], "default_memory_gb": 16, "gpu": "Intel Iris Plus"},
+  {"product": "MacBook Pro 15 2019", "chip": "Intel Core i7-9750H", "memory_gb": [16, 32], "default_memory_gb": 16, "gpu": "Intel UHD 630 + AMD Radeon Pro 555X 4 GB"},
+  {"product": "MacBook Pro 16 2019", "chip": "Intel Core i7-9750H", "memory_gb": [16, 32, 64], "default_memory_gb": 16, "gpu": "Intel UHD 630 + AMD Radeon Pro 5300M 4 GB"},
+  {"product": "Mac mini 2018", "chip": "Intel Core i3/i5/i7", "memory_gb": [8, 16, 32, 64], "default_memory_gb": 8, "gpu": "Intel UHD 630"},
+  {"product": "iMac 27 2020", "chip": "Intel Core i5/i7/i9", "memory_gb": [8, 16, 32, 64, 128], "default_memory_gb": 8, "gpu": "Radeon Pro 5300-5700 XT"},
+  {"product": "Mac Pro 2019", "chip": "Intel Xeon W", "memory_gb": [32, 48, 96, 192, 384, 768], "default_memory_gb": 32, "gpu": "AMD Radeon Pro 580X / Vega II"}
+]

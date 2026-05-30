@@ -4,7 +4,7 @@ class Ollamallm < Formula
   desc "Recommend Ollama models based on your Mac or GPU hardware"
   homepage "https://github.com/zhmcoder/ollamallm"
   url "https://github.com/zhmcoder/ollamallm/releases/download/v0.1.0/ollamallm-0.1.0.tar.gz"
-  sha256 "8610f1d0cf657cee19f9795653ef942c9483f86f279160c72d8e09f805895ad4"
+  sha256 "259a964ae2cba7de1ea35ff081bcd18f478ebbb884d7db806a42fb07cf59a662"
   license "MIT"
   version "0.1.0"
 

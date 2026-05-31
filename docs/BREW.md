@@ -65,6 +65,32 @@ brew tap zhmcoder/ollamallm https://github.com/zhmcoder/ollamallm
 brew install ollamallm
 ```
 
+### 升级到新版本
+
+已安装时 **`brew untap` 会失败**（Formula 仍在使用中），且重复 `brew tap` **不会**自动拉取最新 Formula。请用：
+
+```bash
+brew update
+brew upgrade ollamallm
+```
+
+若仍提示旧版本，手动更新 tap 仓库后再升级：
+
+```bash
+git -C "$(brew --repo zhmcoder/ollamallm)" fetch origin
+git -C "$(brew --repo zhmcoder/ollamallm)" reset --hard origin/main
+brew upgrade ollamallm
+```
+
+或强制重建 tap（需先卸载）：
+
+```bash
+brew uninstall ollamallm
+brew untap zhmcoder/ollamallm
+brew tap zhmcoder/ollamallm https://github.com/zhmcoder/ollamallm
+brew install ollamallm
+```
+
 ## 验证
 
 ```bash

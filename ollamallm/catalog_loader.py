@@ -32,11 +32,9 @@ def load_models(*, include_online: bool = True) -> list[ModelEntry]:
     for entry in _load_builtin_models():
         merged[entry.full_name] = entry
 
-    online_count = 0
     if include_online:
         for entry in fetch_online_models():
             merged[entry.full_name] = entry
-            online_count += 1
 
     models = list(merged.values())
     models.sort(key=lambda m: (m.params_b, m.name, m.tag))

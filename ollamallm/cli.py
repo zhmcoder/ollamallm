@@ -5,9 +5,15 @@ from __future__ import annotations
 import sys
 
 from ollamallm.detector.darwin import detect_local
-from ollamallm.matcher.engine import filter_by_keyword, match_models
+from ollamallm.catalog.online import search_ollama_library
+from ollamallm.matcher.engine import match_models
 from ollamallm.models import CpuAmbiguousError, CpuFamily, HardwareProfile
-from ollamallm.output.formatter import HELP_TEXT, format_no_search_results, format_results
+from ollamallm.output.formatter import (
+    HELP_TEXT,
+    format_no_search_results,
+    format_results,
+    format_search_network_error,
+)
 from ollamallm.query_parser import ParsedQuery, parse_query
 from ollamallm.resolver.device import resolve_device
 
@@ -66,10 +72,14 @@ def _run_search(keyword: str, device_text: str | None) -> None:
             sys.exit(1)
         from_local = True
 
-    recommendations = filter_by_keyword(match_models(profile), keyword)
-    if not recommendations:
+    outcome = search_ollama_library(keyword)
+    if outcome.network_error:
+        print(format_search_network_error(keyword))
+        sys.exit(1)
+    if not outcome.models:
         print(format_no_search_results(keyword))
         sys.exit(1)
+    recommendations = match_models(profile, outcome.models)
     print(format_results(profile, recommendations, from_local=from_local, search_keyword=keyword))
 
 

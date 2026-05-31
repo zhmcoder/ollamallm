@@ -13,8 +13,8 @@ from ollamallm.models import (
 )
 
 
-def match_models(profile: HardwareProfile) -> list[Recommendation]:
-    models = load_models()
+def match_models(profile: HardwareProfile, models: list[ModelEntry] | None = None) -> list[Recommendation]:
+    models = models if models is not None else load_models()
     results: list[Recommendation] = []
 
     for model in models:

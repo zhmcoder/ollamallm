@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import os
+import urllib.parse
 
 from ollamallm.models import (
     CpuFamily,
@@ -12,6 +13,21 @@ from ollamallm.models import (
     TIER_ICONS,
     Tier,
 )
+
+_MODEL_TYPE_LABELS = {
+    "embed": "嵌入模型",
+    "rerank": "重排模型",
+    "vision": "视觉模型",
+}
+
+
+def _speed_column(rec: Recommendation) -> str:
+    kind = _MODEL_TYPE_LABELS.get(rec.model.type)
+    if kind:
+        return kind.ljust(11)
+    if rec.speed_tok_s is not None:
+        return f"~{rec.speed_tok_s:.0f} tok/s".ljust(11)
+    return "—".ljust(11)
 
 
 def format_results(
@@ -96,10 +112,7 @@ def format_results(
         icon = TIER_ICONS[rec.tier]
         name = rec.model.full_name.ljust(20)
         size = f"~{rec.model.size_q4_gb:.1f} GB".ljust(9)
-        if rec.speed_tok_s is not None:
-            speed = f"~{rec.speed_tok_s:.0f} tok/s".ljust(11)
-        else:
-            speed = "—".ljust(11)
+        speed = _speed_column(rec)
 
         pull = f"ollama pull {rec.model.full_name}"
         if rec.tier == Tier.NO:
@@ -113,14 +126,24 @@ def format_results(
     return "\n".join(lines)
 
 
+def format_search_network_error(keyword: str) -> str:
+    return f"""无法连接 ollama.com 搜索「{keyword}」（已自动重试 2 次）。
+
+请检查网络后手动重试:
+  ollamallm {keyword}
+
+也可稍后再试，或访问 https://ollama.com/search?q={urllib.parse.quote(keyword)} 查看模型。
+"""
+
+
 def format_no_search_results(keyword: str) -> str:
-    return f"""未找到包含「{keyword}」的模型。
+    return f"""未在 ollama.com 找到包含「{keyword}」的模型。
 
 你是否想查询设备型号？例如:
   ollamallm M2 Pro 16GB
   ollamallm RTX 4090
 
-常用模型关键词: qwen, llama, mistral, deepseek, gemma
+常用模型关键词: qwen, llama, mistral, deepseek, nomic, bge
 """
 
 
@@ -150,11 +173,12 @@ def _format_json(profile: HardwareProfile, recommendations: list[Recommendation]
         "recommendations": [
             {
                 "model": r.model.full_name,
+                "model_type": r.model.type,
                 "size_gb": r.model.size_q4_gb,
                 "quant": "q4_K_M",
                 "tier": r.tier.value,
-                "speed_tok_s": r.speed_tok_s,
-                "speed_label": r.speed_label,
+                "speed_tok_s": r.speed_tok_s if r.model.type not in _MODEL_TYPE_LABELS else None,
+                "speed_label": _MODEL_TYPE_LABELS.get(r.model.type, r.speed_label),
                 "pull_command": f"ollama pull {r.model.full_name}",
                 "note": r.note,
             }

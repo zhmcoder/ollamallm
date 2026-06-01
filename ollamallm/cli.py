@@ -14,25 +14,13 @@ from ollamallm.output.formatter import (
     format_results,
     format_search_network_error,
 )
+from ollamallm.output.terminal_io import configure_terminal_output, terminal_print
 from ollamallm.query_parser import ParsedQuery, parse_query
 from ollamallm.resolver.device import resolve_device
 
 
-def _ensure_utf8_stdout() -> None:
-    if hasattr(sys.stdout, "reconfigure"):
-        try:
-            sys.stdout.reconfigure(encoding="utf-8", errors="replace")
-        except Exception:
-            pass
-    if hasattr(sys.stderr, "reconfigure"):
-        try:
-            sys.stderr.reconfigure(encoding="utf-8", errors="replace")
-        except Exception:
-            pass
-
-
 def main() -> None:
-    _ensure_utf8_stdout()
+    configure_terminal_output()
     args = sys.argv[1:]
 
     if not args:
@@ -40,7 +28,7 @@ def main() -> None:
         return
 
     if len(args) == 1 and args[0].lower() in ("help", "-h", "--help"):
-        print(HELP_TEXT.rstrip())
+        terminal_print(HELP_TEXT.rstrip())
         return
 
     if args[0] == "--json":
@@ -65,10 +53,10 @@ def _run_local() -> None:
     try:
         profile = detect_local()
     except RuntimeError as exc:
-        print(f"错误: {exc}", file=sys.stderr)
+        terminal_print(f"错误: {exc}", file=sys.stderr)
         sys.exit(1)
     recommendations = match_models(profile)
-    print(format_results(profile, recommendations, from_local=True))
+    terminal_print(format_results(profile, recommendations, from_local=True))
 
 
 def _run_search(keyword: str, device_text: str | None) -> None:
@@ -82,19 +70,19 @@ def _run_search(keyword: str, device_text: str | None) -> None:
         try:
             profile = detect_local()
         except RuntimeError as exc:
-            print(f"错误: {exc}", file=sys.stderr)
+            terminal_print(f"错误: {exc}", file=sys.stderr)
             sys.exit(1)
         from_local = True
 
     outcome = search_ollama_library(keyword)
     if outcome.network_error:
-        print(format_search_network_error(keyword))
+        terminal_print(format_search_network_error(keyword))
         sys.exit(1)
     if not outcome.models:
-        print(format_no_search_results(keyword))
+        terminal_print(format_no_search_results(keyword))
         sys.exit(1)
     recommendations = match_models(profile, outcome.models)
-    print(
+    terminal_print(
         format_results(
             profile,
             recommendations,
@@ -111,7 +99,7 @@ def _run_device(text: str, cpu_override: CpuFamily | None = None) -> None:
     except SystemExit:
         return
     recommendations = match_models(profile)
-    print(format_results(profile, recommendations, from_local=False))
+    terminal_print(format_results(profile, recommendations, from_local=False))
 
 
 def _resolve_device(text: str, cpu_override: CpuFamily | None = None) -> HardwareProfile:
@@ -119,18 +107,18 @@ def _resolve_device(text: str, cpu_override: CpuFamily | None = None) -> Hardwar
         return resolve_device(text, cpu_override=cpu_override)
     except CpuAmbiguousError as exc:
         if not sys.stdin.isatty():
-            print(exc.message(), file=sys.stderr)
+            terminal_print(exc.message(), file=sys.stderr)
             sys.exit(2)
-        print(exc.message())
+        terminal_print(exc.message())
         choice = input("> ").strip().lower()
         if choice in ("1", "apple", "m1"):
             return _resolve_device(text, cpu_override=CpuFamily.APPLE)
         if choice in ("2", "intel"):
             return _resolve_device(text, cpu_override=CpuFamily.INTEL)
-        print("请输入 1 或 2", file=sys.stderr)
+        terminal_print("请输入 1 或 2", file=sys.stderr)
         sys.exit(1)
     except ValueError as exc:
-        print(str(exc), file=sys.stderr)
+        terminal_print(str(exc), file=sys.stderr)
         sys.exit(1)
 
 

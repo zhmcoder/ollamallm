@@ -10,10 +10,10 @@ from ollamallm.models import (
     CpuFamily,
     HardwareProfile,
     Recommendation,
-    TIER_ICONS,
     TIER_LABELS,
     Tier,
 )
+from ollamallm.output.terminal_io import inline_warning_icon, tier_icon
 
 _MODEL_TYPE_LABELS = {
     "embed": "嵌入模型",
@@ -72,7 +72,7 @@ def format_results(
 
     if profile.inference_mode.value == "cpu_only" and profile.cpu_family == CpuFamily.INTEL:
         lines.append("")
-        lines.append("⚠️  Intel Mac 说明: Ollama 主要使用 CPU 推理，大模型速度较慢，建议 7B 以下模型")
+        lines.append(f"{inline_warning_icon()}  Intel Mac 说明: Ollama 主要使用 CPU 推理，大模型速度较慢，建议 7B 以下模型")
 
     lines.append("")
     if search_keyword:
@@ -106,7 +106,7 @@ def format_results(
     lines.append("─" * 38)
 
     for rec in recommendations:
-        icon = TIER_ICONS[rec.tier]
+        icon = tier_icon(rec.tier)
         name = rec.model.full_name.ljust(20)
         size = f"~{rec.model.size_q4_gb:.1f} GB".ljust(9)
         if rec.speed_tok_s is not None:
@@ -178,7 +178,7 @@ def _format_json(profile: HardwareProfile, recommendations: list[Recommendation]
                 "quant": "q4_K_M",
                 "tier": r.tier.value,
                 "tier_label": TIER_LABELS[r.tier],
-                "tier_icon": TIER_ICONS[r.tier],
+                "tier_icon": tier_icon(r.tier),
                 "speed_tok_s": r.speed_tok_s if r.model.type not in _MODEL_TYPE_LABELS else None,
                 "speed_label": _MODEL_TYPE_LABELS.get(r.model.type, r.speed_label),
                 "pull_command": f"ollama pull {r.model.full_name}",

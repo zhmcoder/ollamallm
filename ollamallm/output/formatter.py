@@ -11,6 +11,7 @@ from ollamallm.models import (
     HardwareProfile,
     Recommendation,
     TIER_ICONS,
+    TIER_LABELS,
     Tier,
 )
 
@@ -21,21 +22,13 @@ _MODEL_TYPE_LABELS = {
 }
 
 
-def _speed_column(rec: Recommendation) -> str:
-    kind = _MODEL_TYPE_LABELS.get(rec.model.type)
-    if kind:
-        return kind.ljust(11)
-    if rec.speed_tok_s is not None:
-        return f"~{rec.speed_tok_s:.0f} tok/s".ljust(11)
-    return "—".ljust(11)
-
-
 def format_results(
     profile: HardwareProfile,
     recommendations: list[Recommendation],
     *,
     from_local: bool,
     search_keyword: str | None = None,
+    search_has_more: bool = False,
 ) -> str:
     if os.environ.get("OLLAMALLM_JSON"):
         return _format_json(profile, recommendations)
@@ -93,6 +86,10 @@ def format_results(
                 f"另有 {total_no} 个匹配模型内存不足"
                 + (f"（展示前 {no_shown} 个）" if total_no > no_shown else "")
             )
+        if search_has_more:
+            lines.append(
+                "提示: 搜索结果较多，仅展示前 3 页；请输入更精确的搜索关键词以缩小范围"
+            )
     else:
         lines.append("推荐 Ollama 模型")
         runnable_count = total_runnable
@@ -112,7 +109,10 @@ def format_results(
         icon = TIER_ICONS[rec.tier]
         name = rec.model.full_name.ljust(20)
         size = f"~{rec.model.size_q4_gb:.1f} GB".ljust(9)
-        speed = _speed_column(rec)
+        if rec.speed_tok_s is not None:
+            speed = f"~{rec.speed_tok_s:.0f} tok/s".ljust(11)
+        else:
+            speed = "—".ljust(11)
 
         pull = f"ollama pull {rec.model.full_name}"
         if rec.tier == Tier.NO:
@@ -177,6 +177,8 @@ def _format_json(profile: HardwareProfile, recommendations: list[Recommendation]
                 "size_gb": r.model.size_q4_gb,
                 "quant": "q4_K_M",
                 "tier": r.tier.value,
+                "tier_label": TIER_LABELS[r.tier],
+                "tier_icon": TIER_ICONS[r.tier],
                 "speed_tok_s": r.speed_tok_s if r.model.type not in _MODEL_TYPE_LABELS else None,
                 "speed_label": _MODEL_TYPE_LABELS.get(r.model.type, r.speed_label),
                 "pull_command": f"ollama pull {r.model.full_name}",
@@ -186,7 +188,6 @@ def _format_json(profile: HardwareProfile, recommendations: list[Recommendation]
             if r.tier != Tier.NO or recommendations.index(r) < len(recommendations)
         ],
     }
-    # JSON: all runnable models
     data["recommendations"] = [
         item for item in data["recommendations"] if item["tier"] != "no"
     ]

@@ -18,7 +18,21 @@ from ollamallm.query_parser import ParsedQuery, parse_query
 from ollamallm.resolver.device import resolve_device
 
 
+def _ensure_utf8_stdout() -> None:
+    if hasattr(sys.stdout, "reconfigure"):
+        try:
+            sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+        except Exception:
+            pass
+    if hasattr(sys.stderr, "reconfigure"):
+        try:
+            sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+        except Exception:
+            pass
+
+
 def main() -> None:
+    _ensure_utf8_stdout()
     args = sys.argv[1:]
 
     if not args:
@@ -80,7 +94,15 @@ def _run_search(keyword: str, device_text: str | None) -> None:
         print(format_no_search_results(keyword))
         sys.exit(1)
     recommendations = match_models(profile, outcome.models)
-    print(format_results(profile, recommendations, from_local=from_local, search_keyword=keyword))
+    print(
+        format_results(
+            profile,
+            recommendations,
+            from_local=from_local,
+            search_keyword=keyword,
+            search_has_more=outcome.has_more_results,
+        )
+    )
 
 
 def _run_device(text: str, cpu_override: CpuFamily | None = None) -> None:

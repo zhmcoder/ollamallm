@@ -92,3 +92,15 @@ TIER_ICONS = {
     Tier.TIGHT: "⚠️",
     Tier.NO: "❌",
 }
+
+TIER_LABELS = {
+    Tier.BEST: "推荐",
+    Tier.OK: "可安装",
+    Tier.TIGHT: "不推荐",
+    Tier.NO: "不能安装",
+}
+
+TIER_LEGEND = "  ".join(
+    f"{TIER_ICONS[tier]} {TIER_LABELS[tier]}"
+    for tier in (Tier.BEST, Tier.OK, Tier.TIGHT, Tier.NO)
+)

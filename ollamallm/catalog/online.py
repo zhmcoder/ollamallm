@@ -21,8 +21,10 @@ MODELS_URL = "https://ollama.com/v1/models"
 SEARCH_URL = "https://ollama.com/search"
 LIBRARY_URL = "https://ollama.com/library"
 USER_AGENT = "ollamallm/0.1"
-SEARCH_MODEL_LIMIT = 12
-SEARCH_WORKERS = 4
+SEARCH_PAGE_COUNT = 3
+SEARCH_MODEL_LIMIT = 60  # 约 3 页 × 20 条/页
+SEARCH_WORKERS_BASE = 4
+SEARCH_WORKERS_MAX = 16
 SEARCH_TAGS_PER_MODEL = 8
 
 _PARAM_SPAN_RE = re.compile(r"(\d+(?:\.\d+)?)\s*([kmbt])\b", re.I)
@@ -38,6 +40,7 @@ _api_load_ok: bool | None = None
 class SearchOutcome:
     models: list[ModelEntry]
     network_error: bool = False
+    has_more_results: bool = False
 
 
 def _get_json(url: str) -> dict | list | None:
@@ -135,7 +138,8 @@ def _parse_search_page(html: str) -> list[dict]:
     seen: set[str] = set()
 
     def add(name: str, chunk: str) -> None:
-        if name in seen or "/" in name:
+        name = name.strip()
+        if not name or name in seen:
             return
         seen.add(name)
         capabilities = re.findall(r"x-test-capability[^>]*>([^<]+)", chunk)
@@ -152,12 +156,76 @@ def _parse_search_page(html: str) -> list[dict]:
     for match in _SEARCH_CARD_RE.finditer(html):
         add(match.group(1), html[match.start() : match.start() + 2500])
 
-    if not results:
-        for match in _SEARCH_TITLE_RE.finditer(html):
-            name = match.group(1).strip()
-            add(name, html[match.start() : match.start() + 2500])
+    for match in _SEARCH_TITLE_RE.finditer(html):
+        add(match.group(1).strip(), html[match.start() : match.start() + 2500])
 
     return results
+
+
+def _model_tags_url(name: str) -> str:
+    if "/" in name:
+        return f"https://ollama.com/{name}/tags"
+    return f"{LIBRARY_URL}/{urllib.parse.quote(name)}/tags"
+
+
+def _tag_href_patterns(name: str) -> list[str]:
+    escaped = re.escape(name)
+    if "/" in name:
+        return [rf"/{escaped}:([^\"\s]+)\""]
+    return [rf'/library/{escaped}:([^"\s]+)"']
+
+
+def _search_page_url(keyword: str, page: int) -> str:
+    q = urllib.parse.quote(keyword.strip())
+    if page <= 1:
+        return f"{SEARCH_URL}?q={q}"
+    return f"{SEARCH_URL}?page={page}&q={q}"
+
+
+def _has_next_search_page(html: str, current_page: int) -> bool:
+    return f"page={current_page + 1}" in html
+
+
+def _search_tag_workers(candidate_count: int) -> int:
+    """Scale tag-fetch concurrency when multi-page search returns many models."""
+    if candidate_count <= 12:
+        return SEARCH_WORKERS_BASE
+    return min(SEARCH_WORKERS_MAX, max(8, (candidate_count + 4) // 5))
+
+
+def _fetch_single_search_page(keyword: str, page: int) -> tuple[int, str | None]:
+    return page, _get_html(_search_page_url(keyword, page))
+
+
+def _fetch_search_pages(keyword: str) -> tuple[list[dict], bool, bool]:
+    """Fetch up to SEARCH_PAGE_COUNT pages in parallel; return (merged, has_more, all_pages_failed)."""
+    page_html: dict[int, str] = {}
+    with ThreadPoolExecutor(max_workers=SEARCH_PAGE_COUNT) as pool:
+        futures = [
+            pool.submit(_fetch_single_search_page, keyword, page)
+            for page in range(1, SEARCH_PAGE_COUNT + 1)
+        ]
+        for future in as_completed(futures):
+            page, html = future.result()
+            if html:
+                page_html[page] = html
+
+    seen: set[str] = set()
+    merged: list[dict] = []
+    for page in range(1, SEARCH_PAGE_COUNT + 1):
+        html = page_html.get(page)
+        if not html:
+            continue
+        for item in _parse_search_page(html):
+            name = item["name"]
+            if name in seen:
+                continue
+            seen.add(name)
+            merged.append(item)
+
+    final_page_html = page_html.get(SEARCH_PAGE_COUNT)
+    has_more = bool(final_page_html and _has_next_search_page(final_page_html, SEARCH_PAGE_COUNT))
+    return merged, has_more, not page_html
 
 
 def _api_model_sizes() -> dict[str, list[tuple[str, int]]]:
@@ -192,10 +260,11 @@ def _models_from_api_for_name(name: str, *, model_type: str) -> list[ModelEntry]
     return entries
 
 
-def _search_candidates_from_api(keyword: str) -> list[dict]:
+def _search_candidates_from_api(keyword: str) -> tuple[list[dict], bool]:
     key = keyword.lower().strip()
     seen: set[str] = set()
     candidates: list[dict] = []
+    has_more = False
 
     for base_name, items in _api_model_sizes().items():
         if key not in base_name and not any(key in model_id.lower() for model_id, _ in items):
@@ -212,9 +281,10 @@ def _search_candidates_from_api(keyword: str) -> list[dict]:
             }
         )
         if len(candidates) >= SEARCH_MODEL_LIMIT:
+            has_more = True
             break
 
-    return candidates
+    return candidates, has_more
 
 
 def _limit_tag_entries(entries: list[ModelEntry]) -> list[ModelEntry]:
@@ -240,13 +310,18 @@ def _fetch_model_tags(name: str, *, model_type: str, fallback_params: float | No
         by_tag[entry.tag] = entry
 
     if not by_tag:
-        html = _get_html(f"{LIBRARY_URL}/{urllib.parse.quote(name)}/tags")
+        html = _get_html(_model_tags_url(name))
         if html:
+            tag_patterns = _tag_href_patterns(name)
             for block in re.split(r"group px-4 py-3", html)[1:]:
-                tag_match = re.search(rf'/library/{re.escape(name)}:([^"\s]+)"', block)
-                if not tag_match:
+                tag = None
+                for pattern in tag_patterns:
+                    tag_match = re.search(pattern, block)
+                    if tag_match:
+                        tag = tag_match.group(1)
+                        break
+                if not tag:
                     continue
-                tag = tag_match.group(1)
                 size_match = _SIZE_RE.search(block)
                 size_q4 = _parse_size_gb(size_match.group(0)) if size_match else 0.0
                 params = parse_params_b(tag) or fallback_params
@@ -278,19 +353,18 @@ def _search_ollama_library_once(keyword: str) -> SearchOutcome:
     if not key:
         return SearchOutcome(models=[])
 
+    has_more_results = False
     search_page_failed = False
     candidates: list[dict] = []
-    html = _get_html(f"{SEARCH_URL}?q={urllib.parse.quote(keyword.strip())}")
-    if html:
-        parsed = _parse_search_page(html)
+    parsed, has_more_results, search_page_failed = _fetch_search_pages(keyword)
+    if parsed:
         matched = [item for item in parsed if key in item["name"].lower()]
         candidates = matched or parsed
-    else:
-        search_page_failed = True
 
     if not candidates:
         _api_model_sizes()
-        candidates = _search_candidates_from_api(keyword)
+        candidates, api_has_more = _search_candidates_from_api(keyword)
+        has_more_results = api_has_more
 
     if not candidates:
         api_failed = _api_load_ok is False
@@ -298,8 +372,11 @@ def _search_ollama_library_once(keyword: str) -> SearchOutcome:
             return SearchOutcome(models=[], network_error=True)
         return SearchOutcome(models=[])
 
+    to_fetch = candidates[:SEARCH_MODEL_LIMIT]
+    _api_model_sizes()  # warm cache before parallel tag requests
     entries: dict[str, ModelEntry] = {}
-    with ThreadPoolExecutor(max_workers=SEARCH_WORKERS) as pool:
+    workers = _search_tag_workers(len(to_fetch))
+    with ThreadPoolExecutor(max_workers=workers) as pool:
         futures = [
             pool.submit(
                 _fetch_model_tags,
@@ -307,7 +384,7 @@ def _search_ollama_library_once(keyword: str) -> SearchOutcome:
                 model_type=item["model_type"],
                 fallback_params=item["params_b"],
             )
-            for item in candidates[:SEARCH_MODEL_LIMIT]
+            for item in to_fetch
         ]
         for future in as_completed(futures):
             try:
@@ -320,7 +397,7 @@ def _search_ollama_library_once(keyword: str) -> SearchOutcome:
     models.sort(key=lambda m: (m.name, m.tag))
     if not models and search_page_failed:
         return SearchOutcome(models=[], network_error=True)
-    return SearchOutcome(models=models)
+    return SearchOutcome(models=models, has_more_results=has_more_results)
 
 
 def search_ollama_library(keyword: str) -> SearchOutcome:

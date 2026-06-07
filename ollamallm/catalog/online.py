@@ -287,57 +287,76 @@ def _search_candidates_from_api(keyword: str) -> tuple[list[dict], bool]:
     return candidates, has_more
 
 
+_TAG_VARIANT_RE = re.compile(r"-(q\d|fp\d|bf16|mlx|qat|mxfp\d|nvfp\d|int\d|gguf)", re.I)
+
+
 def _limit_tag_entries(entries: list[ModelEntry]) -> list[ModelEntry]:
     if len(entries) <= SEARCH_TAGS_PER_MODEL:
         return entries
 
-    def rank(entry: ModelEntry) -> tuple[int, str]:
+    def rank(entry: ModelEntry) -> tuple[int, float, str]:
         tag = entry.tag.lower()
         if tag == "latest":
-            return (0, tag)
-        if re.search(r"-q\d", tag):
-            return (3, tag)
-        return (1, tag)
+            group = 0
+        elif "-" not in tag or re.fullmatch(r"\d+(?:\.\d+)?x?\d*b-a\d+(?:\.\d+)?b", tag):
+            # Canonical size tags: e2b, 12b, 31b, 26b-a4b ...
+            group = 1
+        elif _TAG_VARIANT_RE.search(tag):
+            group = 3
+        else:
+            group = 2
+        # Prefer smaller (more installable) within a group.
+        return (group, entry.size_q4_gb or 0.0, tag)
 
     entries.sort(key=rank)
     return entries[:SEARCH_TAGS_PER_MODEL]
 
 
+def _parse_tags_from_html(
+    name: str, html: str, *, model_type: str, fallback_params: float | None
+) -> dict[str, ModelEntry]:
+    by_tag: dict[str, ModelEntry] = {}
+    tag_patterns = _tag_href_patterns(name)
+    for block in re.split(r"group px-4 py-3", html)[1:]:
+        tag = None
+        for pattern in tag_patterns:
+            tag_match = re.search(pattern, block)
+            if tag_match:
+                tag = tag_match.group(1)
+                break
+        if not tag:
+            continue
+        size_match = _SIZE_RE.search(block)
+        size_q4 = _parse_size_gb(size_match.group(0)) if size_match else 0.0
+        params = parse_params_b(tag) or fallback_params
+        if size_q4 <= 0 and params:
+            size_q4 = estimate_q4_gb(params)
+        if params is None and size_q4 > 0:
+            params = round(size_q4 / 0.55, 3)
+        if size_q4 <= 0:
+            continue
+        by_tag[tag] = ModelEntry(
+            name=name,
+            tag=tag,
+            params_b=params or 0.0,
+            size_q4_gb=size_q4,
+            type=model_type,
+        )
+    return by_tag
+
+
 def _fetch_model_tags(name: str, *, model_type: str, fallback_params: float | None) -> list[ModelEntry]:
+    # The HTML tags page is the authoritative, complete list of tags/sizes.
+    # The api/tags endpoint is a small curated subset (often only one tag per
+    # model), so use it only to fill in tags the HTML page did not provide.
     by_tag: dict[str, ModelEntry] = {}
 
-    for entry in _models_from_api_for_name(name, model_type=model_type):
-        by_tag[entry.tag] = entry
+    html = _get_html(_model_tags_url(name))
+    if html:
+        by_tag.update(_parse_tags_from_html(name, html, model_type=model_type, fallback_params=fallback_params))
 
-    if not by_tag:
-        html = _get_html(_model_tags_url(name))
-        if html:
-            tag_patterns = _tag_href_patterns(name)
-            for block in re.split(r"group px-4 py-3", html)[1:]:
-                tag = None
-                for pattern in tag_patterns:
-                    tag_match = re.search(pattern, block)
-                    if tag_match:
-                        tag = tag_match.group(1)
-                        break
-                if not tag:
-                    continue
-                size_match = _SIZE_RE.search(block)
-                size_q4 = _parse_size_gb(size_match.group(0)) if size_match else 0.0
-                params = parse_params_b(tag) or fallback_params
-                if size_q4 <= 0 and params:
-                    size_q4 = estimate_q4_gb(params)
-                if params is None and size_q4 > 0:
-                    params = round(size_q4 / 0.55, 3)
-                if size_q4 <= 0:
-                    continue
-                by_tag[tag] = ModelEntry(
-                    name=name,
-                    tag=tag,
-                    params_b=params or 0.0,
-                    size_q4_gb=size_q4,
-                    type=model_type,
-                )
+    for entry in _models_from_api_for_name(name, model_type=model_type):
+        by_tag.setdefault(entry.tag, entry)
 
     if by_tag:
         return _limit_tag_entries(list(by_tag.values()))

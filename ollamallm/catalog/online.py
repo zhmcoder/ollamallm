@@ -312,6 +312,12 @@ def _limit_tag_entries(entries: list[ModelEntry]) -> list[ModelEntry]:
     return entries[:SEARCH_TAGS_PER_MODEL]
 
 
+def _is_cloud_tag(tag: str) -> bool:
+    """Cloud tags run on Ollama's servers and have no local download size."""
+    t = tag.lower()
+    return t == "cloud" or t.endswith("-cloud") or t.startswith("cloud-") or "-cloud-" in t
+
+
 def _parse_tags_from_html(
     name: str, html: str, *, model_type: str, fallback_params: float | None
 ) -> dict[str, ModelEntry]:
@@ -324,7 +330,7 @@ def _parse_tags_from_html(
             if tag_match:
                 tag = tag_match.group(1)
                 break
-        if not tag:
+        if not tag or _is_cloud_tag(tag):
             continue
         size_match = _SIZE_RE.search(block)
         size_q4 = _parse_size_gb(size_match.group(0)) if size_match else 0.0
@@ -356,13 +362,22 @@ def _fetch_model_tags(name: str, *, model_type: str, fallback_params: float | No
         by_tag.update(_parse_tags_from_html(name, html, model_type=model_type, fallback_params=fallback_params))
 
     for entry in _models_from_api_for_name(name, model_type=model_type):
+        if _is_cloud_tag(entry.tag):
+            continue
         by_tag.setdefault(entry.tag, entry)
 
     if by_tag:
         return _limit_tag_entries(list(by_tag.values()))
 
+    # Page loaded but yielded no installable tags (e.g. cloud-only model): skip it.
+    if html is not None:
+        return []
+
+    # Page failed to load: provide a best-effort fallback only when sized.
     params = fallback_params or 0.0
     size_q4 = estimate_q4_gb(params) if params else 0.0
+    if size_q4 <= 0:
+        return []
     return [ModelEntry(name=name, tag="latest", params_b=params, size_q4_gb=size_q4, type=model_type)]
 
 
